@@ -4,6 +4,7 @@ import { API_BASE_URL } from "../utils/utils";
 
 export const login = async (formData: { login: string; password: string }): Promise<any> => {
   try {
+    console.log("API_BASE_URL: ", API_BASE_URL)
     const response = await axios.post(`${API_BASE_URL}/auth/login`, formData, {
       headers: {
         'Content-Type': 'application/json'
