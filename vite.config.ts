@@ -10,13 +10,5 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    
   },
-  define: {
-    'process.env': {
-      
-    API_BASE_URL: 'http://localhost:3000',
-    FRONT_BASE_URL: 'http://localhost:4000',
-  }
-  }
 });
