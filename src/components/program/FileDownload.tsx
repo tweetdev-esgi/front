@@ -1,12 +1,14 @@
 import React from "react";
 import axios from "axios"; // Assurez-vous que vous avez installé axios avec `npm install axios` ou `yarn add axios`
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const FileDownload = () => {
   const downloadFile = async () => {
     try {
       // Faites un appel GET à l'API pour récupérer le fichier
       const response = await axios({
-        url: "http://localhost:3000/program/execute", // URL de votre route Express
+        url: API_BASE_URL + "/program/execute", // URL de votre route Express
         method: "POST",
         responseType: "blob", // Important pour le téléchargement de fichiers
         data: {

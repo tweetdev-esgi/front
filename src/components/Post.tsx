@@ -16,6 +16,8 @@ import {
 } from "../api/post";
 import toast from "react-hot-toast";
 import { fetchProgramById } from "../api/programs";
+const FRONT_BASE_URL =
+  import.meta.env.VITE_FRONT_BASE_URL || "http://localhost:4000";
 
 function Post({ postInfo }) {
   const [value, setValue] = React.useState(`
@@ -278,7 +280,7 @@ function Post({ postInfo }) {
 ${programContent}
 \`\`\`
 ` +
-                  `**[link to program](http://localhost:4000/program/${postInfo.program})**`
+                  `**[link to program](${FRONT_BASE_URL}/program/${postInfo.program})**`
             }
             className="p-4 bg-inherit rounded-lg"
           />
