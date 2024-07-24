@@ -1,5 +1,3 @@
-import React from "react";
-import { ThumbsUp } from "lucide-react";
 function Button({ Icon, color }) {
   return (
     <div className="bg-blue-200  w-fit px-2 py-1 rounded-md flex items-center gap-1">

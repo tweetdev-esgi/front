@@ -1,21 +1,36 @@
-# Use an official Node.js LTS (Long Term Support) version as a parent image
-FROM node:16
+# Use a Node.js image to build the app
+FROM node:18-alpine AS builder
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy package.json and package-lock.json (if available)
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the current directory contents into the container at /app
+# Copy the rest of the application code
 COPY . .
 
-# Expose port 4000 to the outside world
-EXPOSE 4000
+# Build the application
+RUN npm run build
 
-RUN npm run build 
+# Use a new image to serve the built application
+FROM node:18-alpine
 
-CMD npm start
+WORKDIR /app
+
+# Install serve to serve the built static files
+RUN npm install -g serve
+
+# Copy the build artifacts from the builder stage
+COPY --from=builder /app/dist /app
+
+# Set environment variable for the port
+ENV PORT 80
+
+# Expose the port
+EXPOSE $PORT
+
+# Serve the application
+CMD ["serve", "-s", ".", "-l", "$PORT"]
