@@ -75,7 +75,7 @@ export default function Program({ programInfo }) {
       );
       toast.success("Deleted Program !");
 
-      window.location.href = "/programs";
+      window.location.href = "/";
     } catch (error) {
       toast.error("Error deleting Program ");
     }

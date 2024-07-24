@@ -318,7 +318,7 @@ const DetailsWorkflow = () => {
         selectedWorkflow?._id ?? ""
       );
       toast.success("workflow deleted successfully");
-      window.location.href = "/workflows";
+      window.location.href = "/";
     } catch (error) {
       toast.error("error while deleting workflow");
     }

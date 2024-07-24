@@ -47,7 +47,7 @@ const CreateCode: React.FC<CreateCodeProps> = ({
 
       const create = await createProgram(sessionToken, content);
 
-      window.location.href = "/programs";
+      window.location.href = "/";
       toast.success(`${name} created successfully`);
     } catch (error) {
       console.error("Error creating code:", error);

@@ -40,7 +40,7 @@ export default function Workflow({ programInfo }) {
       await deleteWorkflow(sessionToken, programInfo._id);
       toast.success("Deleted post !");
 
-      window.location.href = "/workflows";
+      window.location.href = "/";
     } catch (error) {
       toast.error("Error deleting post ");
     }
