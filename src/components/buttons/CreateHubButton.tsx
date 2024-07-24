@@ -10,7 +10,9 @@ import toast from "react-hot-toast";
 function CreateHubButton(props) {
   const [isCreateHubModalOpen, setIsCreateHubModalOpen] = useState(false);
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("ORE WA STRIKA DA");
+  const [description, setDescription] = useState(
+    "Our community is all about celebrating victories, big and small, and sharing endless laughs along the way. If you're looking for a place where everyone knows your name (and your high scores), you've found it!"
+  );
   const [profileImageUrl, setProfileImageUrl] = useState(
     "https://styles.redditmedia.com/t5_mm79h/styles/communityIcon_hn20mowlrmxc1.png"
   );

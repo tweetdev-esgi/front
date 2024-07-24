@@ -25,8 +25,8 @@ function Login() {
   return (
     <div>
       <AuthForm
-        title="Connectez-vous"
-        buttonText="Connexion"
+        title="Sign in"
+        buttonText="Submit"
         onSubmit={(formData: any) => handleLoginSubmit(formData)}
         isSignup={false}
       />

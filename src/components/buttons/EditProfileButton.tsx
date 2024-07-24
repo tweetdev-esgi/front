@@ -1,28 +1,38 @@
 import { ApplePodcastsLogo, Users } from "@phosphor-icons/react";
 import { Pencil, Plus, X } from "lucide-react";
-import React, { useState } from "react";
-import CustomButton from "./CustomButton";
+import React, { useEffect, useState } from "react";
 import CustomButtonBig from "./CustomButtonBig";
-import { createHub } from "../../api/hub";
 import { getSession } from "../../services/sessionService";
 import toast from "react-hot-toast";
-import { updateUser } from "../../api/user";
+import { fetchSelfInfo, updateUser } from "../../api/user";
 
-export default function EditProfileButton(props) {
+export default function EditProfileButton() {
   const [isCreateHubModalOpen, setIsCreateHubModalOpen] = useState(false);
   const [username, setUsername] = useState("");
-  const [description, setDescription] = useState("ORE WA STRIKA DA");
-  const [profileImageUrl, setProfileImageUrl] = useState(
-    "https://styles.redditmedia.com/t5_mm79h/styles/communityIcon_hn20mowlrmxc1.png"
-  );
-  const [coverImageUrl, setCoverImageUrl] = useState(
-    "https://styles.redditmedia.com/t5_mm79h/styles/bannerBackgroundImage_n6ncpyyb2fx81.png"
-  );
-
+  const [description, setDescription] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const toggleCreateHubModal = () => {
     setIsCreateHubModalOpen((prevState) => !prevState);
   };
 
+  useEffect(() => {
+    const sessionToken = getSession();
+    const fetchData = async () => {
+      try {
+        if (sessionToken) {
+          const selfInfoData = await fetchSelfInfo(sessionToken);
+          setUsername(selfInfoData.username);
+          setDescription(selfInfoData.description);
+          setProfileImageUrl(selfInfoData.profileImageUrl);
+          setCoverImageUrl(selfInfoData.backgroundImageUrl);
+        }
+      } catch (error) {
+        console.error("error while fetching user hubs", error);
+      }
+    };
+    fetchData();
+  }, []);
   const handleSubmit = async () => {
     const hubData = {
       username,

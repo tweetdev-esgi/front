@@ -28,7 +28,6 @@ import {
   PatreonLogo,
 } from "@phosphor-icons/react";
 import EditButton from "../components/buttons/EditButton";
-import FollowButton from "../components/buttons/FollowButton";
 import ModalFollowers from "../components/ModalFollowers";
 import Post from "../components/Post";
 import EditProfileButton from "../components/buttons/EditProfileButton";
@@ -42,6 +41,7 @@ import Workflow from "../components/Workflow";
 import { fetchGetUserPrograms, fetchPrograms } from "../api/programs";
 import { fetchGetUserWorkflows, fetchWorkflows } from "../api/workflow";
 import Program from "../components/program/Program";
+import FollowButton from "../components/buttons/FollowButton";
 
 function Profile() {
   const [userInfo, setUserInfo] = useState<UserResponse>(defaultUser);
@@ -151,7 +151,7 @@ function Profile() {
     if (username) {
       return username === sessionUsername ? (
         <>
-          <EditProfileButton />
+          {userInfo.username !== "" && <EditProfileButton />}
           <EditPasswordButton />
           <div className="flex items-center cursor-pointer relative group">
             <div className="absolute bg-white z-10 top-10 right-0 hidden group-hover:block">
@@ -176,7 +176,7 @@ function Profile() {
     }
     return (
       <>
-        <EditProfileButton />
+        {userInfo && <EditProfileButton />}
         <div className="flex items-center cursor-pointer relative group">
           <div className="absolute bg-white z-10 top-10 right-0 hidden group-hover:block">
             <button
