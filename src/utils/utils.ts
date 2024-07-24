@@ -1,6 +1,3 @@
-
-import * as dotenv from "dotenv";
-dotenv.config({ path:'.env' });
 export const API_BASE_URL = process.env.API_BASE_URL as string;
 export const FRONT_BASE_URL = process.env.FRONT_BASE_URL as string;
 
