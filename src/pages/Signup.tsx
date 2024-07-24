@@ -17,7 +17,7 @@ function Signup() {
         backgroundImageUrl:
           "https://preview.redd.it/why-did-gojo-fire-his-hollow-purple-the-wrong-way-and-curve-v0-7lff23n81lhb1.png?auto=webp&s=304248697abd05b315bcbaa187ca4d8aa009b49a",
         description:
-          "Développeur passionné par les technologies web, spécialisé en React et Node.js. J'aime partager mes connaissances et collaborer sur des projets open source.",
+          "Welcome to the crème de la crème! You've stumbled upon the profile of the one and only, the magnificent, the best-of-the-best",
         joinDate: new Date(),
       });
       toast.success("Account created !", { duration: 4000 });
@@ -29,8 +29,8 @@ function Signup() {
 
   return (
     <AuthForm
-      title="Inscrivez-vous"
-      buttonText="Inscription"
+      title="Sign up"
+      buttonText="Submit"
       onSubmit={handleSignupSubmit}
       isSignup={true}
     />

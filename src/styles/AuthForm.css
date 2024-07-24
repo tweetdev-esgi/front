@@ -12,9 +12,6 @@
 .auth-input {
     height: 37%;
     width: 100%;
-    border-radius: 5px;
-    border: solid black;
-    padding: 8px;
 
 }
 .auth-button {
@@ -29,9 +26,6 @@
 }
 
 
-.auth-input {
-    border-color: black;
-}
 
 .auth-form {
     display: inline-grid;
