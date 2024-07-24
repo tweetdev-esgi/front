@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from "../utils/utils";
 
 
 export const getPosts = async (token: string): Promise<any> => {
