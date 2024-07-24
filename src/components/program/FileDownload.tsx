@@ -1,7 +1,6 @@
 import React from "react";
-import axios from "axios"; // Assurez-vous que vous avez installé axios avec `npm install axios` ou `yarn add axios`
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+import axios from "axios"; // Assurez-vous que vous avez installé axios
+import { API_BASE_URL } from "../../utils/utils";
 
 const FileDownload = () => {
   const downloadFile = async () => {

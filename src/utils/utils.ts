@@ -1,3 +1,6 @@
+export const API_BASE_URL = "https://tweetdev-back-c06023c6bfdd.herokuapp.com"
+export const FRONT_BASE_URL = "https://tweetdev-front-2be782a7954b.herokuapp.com"
+
 export const convertTimestampToMonthYear =(timestamp: string): string =>{
     const date = new Date(timestamp);
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day:"2-digit" };

@@ -1,6 +1,6 @@
 import axios from "axios";
+import { API_BASE_URL } from "../utils/utils";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export const login = async (formData: { login: string; password: string }): Promise<any> => {
   try {
