@@ -4,7 +4,11 @@ import { getSession } from "../services/sessionService";
 import LikeButton from "./buttons/LikeButton";
 import { Dot, Trash2, MessageCircle } from "lucide-react";
 import MDEditor from "@uiw/react-md-editor";
-import { convertTimeToPostTime, navigateTo } from "../utils/utils";
+import {
+  convertTimeToPostTime,
+  FRONT_BASE_URL,
+  navigateTo,
+} from "../utils/utils";
 import { fetchUserProfilePictureByUsername } from "../api/user";
 import { fetchHubByName } from "../api/hub";
 import { DotsThreeVertical } from "@phosphor-icons/react";
@@ -16,8 +20,7 @@ import {
 } from "../api/post";
 import toast from "react-hot-toast";
 import { fetchProgramById } from "../api/programs";
-const FRONT_BASE_URL =
-  import.meta.env.VITE_FRONT_BASE_URL || "http://localhost:4000";
+const BASE_URL = FRONT_BASE_URL || "http://localhost:4000";
 
 function Post({ postInfo }) {
   const [value, setValue] = React.useState(`
@@ -280,7 +283,7 @@ function Post({ postInfo }) {
 ${programContent}
 \`\`\`
 ` +
-                  `**[link to program](${FRONT_BASE_URL}/program/${postInfo.program})**`
+                  `**[link to program](${BASE_URL}/program/${postInfo.program})**`
             }
             className="p-4 bg-inherit rounded-lg"
           />
