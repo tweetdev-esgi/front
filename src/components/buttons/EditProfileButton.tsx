@@ -5,6 +5,7 @@ import CustomButtonBig from "./CustomButtonBig";
 import { getSession } from "../../services/sessionService";
 import toast from "react-hot-toast";
 import { fetchSelfInfo, updateUser } from "../../api/user";
+import { background } from "@chakra-ui/react";
 
 export default function EditProfileButton() {
   const [isCreateHubModalOpen, setIsCreateHubModalOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function EditProfileButton() {
       username,
       description,
       profileImageUrl,
-      coverImageUrl,
+      backgroundImageUrl: coverImageUrl,
     };
     try {
       const sessionToken = getSession();
@@ -136,7 +137,10 @@ export default function EditProfileButton() {
                       <CustomButtonBig text={"Cancel"} color={""} />
                     </div>
                     <div onClick={handleSubmit}>
-                      <CustomButtonBig text={"Create Hub"} color={"#355cc9"} />
+                      <CustomButtonBig
+                        text={"Update Profile"}
+                        color={"#355cc9"}
+                      />
                     </div>
                   </div>
                 </div>

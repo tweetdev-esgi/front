@@ -11,7 +11,7 @@ import { updateUser } from "../../api/user";
 export default function EditWorkflowButton(props) {
   const [isCreateHubModalOpen, setIsCreateHubModalOpen] = useState(false);
   const [username, setUsername] = useState("");
-  const [description, setDescription] = useState("ORE WA STRIKA DA");
+  const [description, setDescription] = useState("Workflow Title");
   const [profileImageUrl, setProfileImageUrl] = useState(
     "https://styles.redditmedia.com/t5_mm79h/styles/communityIcon_hn20mowlrmxc1.png"
   );
