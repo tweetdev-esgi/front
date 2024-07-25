@@ -30,32 +30,8 @@ import {
   updateWorkflowName,
   upgradeWorkflow,
 } from "../api/workflow";
-const initialNodes = [
-  {
-    id: "1",
-    type: "run-node",
-    data: { label: "Run" },
-    position: { x: 0, y: 0 },
-  },
-  {
-    id: "2",
-    type: "upload-node",
-    data: { label: "Upload" },
-    position: { x: 200, y: 0 },
-  },
-  {
-    id: "3",
-    type: "code-node",
-    data: { label: "Code" },
-    position: { x: 400, y: 0 },
-  },
-  {
-    id: "4",
-    type: "finish-node",
-    data: { label: "Finish" },
-    position: { x: 600, y: 0 },
-  },
-];
+import { executePipeline, executeProgram } from "../api/programs";
+const initialNodes = [];
 
 const nodeTypes = {
   "code-node": CodeNode,
@@ -71,6 +47,9 @@ const DnDFlow = () => {
   const [selectedVersion, setSelectedVersion] = useState("");
   const [versions, setVersions] = useState([]);
 
+  const [output, setOutput] = useState("");
+
+  const [fileUrl, setFileUrl] = useState("");
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -122,18 +101,37 @@ const DnDFlow = () => {
         return;
       }
 
-      const position = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      const newNode = {
-        id: getId(),
-        type,
-        position,
-        data: { label: `${nodeName}` },
-      };
+      if (type === "code-node") {
+        const codeData = event.dataTransfer.getData(
+          "application/reactflow/codeData"
+        );
 
-      setNodes((nds) => nds.concat(newNode));
+        console.log(codeData);
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+        const newNode = {
+          id: getId(),
+          type,
+          position,
+          data: { label: `${nodeName}`, codeData: JSON.parse(codeData) },
+        };
+        setNodes((nds) => nds.concat(newNode));
+      } else {
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+        const newNode = {
+          id: getId(),
+          type,
+          position,
+          data: { label: `${nodeName}` },
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+      }
     },
     [screenToFlowPosition]
   );
@@ -152,6 +150,28 @@ const DnDFlow = () => {
       }
     },
     [edges, setEdges]
+  );
+
+  const onNodesDelete = useCallback(
+    (nodesToDelete) => {
+      // Extract IDs of nodes to delete
+      const nodeIdsToDelete = nodesToDelete.map((node) => node.id);
+
+      // Filter out deleted nodes from the nodes state
+      setNodes((nds) =>
+        nds.filter((node) => !nodeIdsToDelete.includes(node.id))
+      );
+
+      // Filter out edges connected to deleted nodes
+      setEdges((eds) =>
+        eds.filter(
+          (edge) =>
+            !nodeIdsToDelete.includes(edge.source) &&
+            !nodeIdsToDelete.includes(edge.target)
+        )
+      );
+    },
+    [setNodes, setEdges]
   );
   const onSave = async () => {
     if (rfInstance) {
@@ -208,23 +228,33 @@ const DnDFlow = () => {
       toast.success(`${workflowName} upgraded successfully`);
     }
   };
-  const runWorkflow = () => {
+  const runWorkflow = async () => {
     const startNode = nodes.find((node) => node.type === "run-node");
     const endNode = nodes.find((node) => node.type === "finish-node");
 
     if (!startNode || !endNode) {
-      toast.error("Workflow must have a start and finish node.");
+      toast.error("Workflow must have a start node and finish node.");
       return;
     }
 
     const nodeNames = [];
+    const codeNodeDetails = []; // Array to store details of code nodes
     let currentNode = startNode;
 
     while (currentNode) {
       nodeNames.push(currentNode.data.label);
+
+      // Check if the current node is a code-node and extract the details
+      if (currentNode.type === "code-node") {
+        const { language, outputFileType } = currentNode.data.codeData;
+        const code = currentNode.data.codeData.content; // Extract code from content property
+        codeNodeDetails.push({ language, code, outputFileType });
+      }
+
       const nextEdge = edges.find((edge) => edge.source === currentNode.id);
       if (!nextEdge) break;
       currentNode = nodes.find((node) => node.id === nextEdge.target);
+
       if (currentNode && currentNode.type === "finish-node") {
         nodeNames.push(currentNode.data.label);
         break;
@@ -233,10 +263,54 @@ const DnDFlow = () => {
 
     if (currentNode && currentNode.type === "finish-node") {
       toast.success(`Workflow: ${nodeNames.join(" -> ")}`);
+
+      // Prepare FormData for each code node detail
+      const token = getSession();
+      for (const element of codeNodeDetails) {
+        const formData = new FormData();
+        formData.append("language", element.language);
+        formData.append("code", element.code);
+        formData.append("outputFileType", element.outputFileType);
+
+        try {
+          const result = await executePipeline(token, formData);
+
+          if (false) {
+            setOutput(result.split("\n"));
+            toast.success("Le code a été exécuté avec succès.", {
+              duration: 1000,
+            });
+          } else {
+            const url = window.URL.createObjectURL(result);
+            setFileUrl(url);
+            // setMessage("The file is ready to be downloaded.");
+            toast.success("File fetched"); // Use the renamed 'hotToast' variable
+          }
+        } catch (error) {
+          toast.error("Error executing program.");
+          console.error(error);
+        }
+      }
+
+      console.log("Code Node Details:", codeNodeDetails); // Log or use the codeNodeDetails as needed
     } else {
       toast.error("Workflow does not end with a finish node.");
     }
   };
+  const downloadFile = () => {
+    if (fileUrl) {
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      // link.download = "output." + outputType; // Dynamically set the file extension
+      link.download = "output.jpg"; // Dynamically set the file extension
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(fileUrl); // Révoquer l'URL pour libérer les ressources
+    }
+  };
+
   const selectWorkflow = (workflow, key) => {
     setSelectedWorkflow(workflow);
     console.log(workflow);
@@ -328,9 +402,9 @@ const DnDFlow = () => {
     }
   };
 
-  const initializeNodes = () => {
-    setNodes(initialNodes);
-  };
+  // const initializeNodes = () => {
+  //   setNodes(initialNodes);
+  // };
   return (
     <div className="mt-20 mx-4">
       {isAnyWorkflow && (
@@ -371,6 +445,7 @@ const DnDFlow = () => {
           >
             Create Workflow
           </summary>
+          {output}
         </div>
       )}
       {!isAnyWorkflow && (
@@ -381,7 +456,19 @@ const DnDFlow = () => {
           Create Workflow
         </summary>
       )}
-
+      {fileUrl && (
+        <div>
+          <p
+            onClick={downloadFile}
+            style={{
+              textDecoration: "underline",
+            }}
+            className="font-medium text-end   cursor-pointer text-accentColor hover:text-accentColorHover"
+          >
+            Download file
+          </p>
+        </div>
+      )}
       <div className="flex gap-2">
         <WorkflowSideBar
           workflows={workflows}
@@ -398,6 +485,7 @@ const DnDFlow = () => {
             edges={edges}
             nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
+            onNodesDelete={onNodesDelete}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onDrop={onDrop}

@@ -238,6 +238,24 @@ export const fetchPrograms = async (token: string): Promise<any> => {
     }
   };  
 
+  export const executePipeline = async (token: string, formData: FormData): Promise<any> => {
+    try {
+      const outputFileType = formData.get("outputFileType"); // Renvoie 'py'
+
+        const response = await axios.post(`${API_BASE_URL}/program/pipeline/execute`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            },
+            responseType: outputFileType === "void" ? 'text' : 'blob' // Utiliser 'blob' uniquement si outputFileType n'est pas void
+          });
+        return response.data;
+    } catch (error) {
+        console.error("Error executing program:", error);
+        throw error;
+    }
+};
+
   export const updateProgram = async (token: string,id:string, programInfo: any,): Promise<any> => {
     try {
       const response = await axios.put(

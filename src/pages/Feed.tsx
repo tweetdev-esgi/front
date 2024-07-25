@@ -60,7 +60,7 @@ const Feed = () => {
   }, []);
 
   return (
-    <div className="feed-container grid grid-cols-[1fr_1000px_1.2fr] gap-4 p-12 mt-6">
+    <div className="feed-container grid grid-cols-[1fr_800px_1.2fr] gap-4 p-12 mt-6">
       <div className="hidden sm:block">
         <Favorites />
       </div>

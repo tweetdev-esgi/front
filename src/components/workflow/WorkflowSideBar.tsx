@@ -80,6 +80,16 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
     event.dataTransfer.effectAllowed = "move";
   };
 
+  const onDragStartCode = (event, nodeName, nodeType, codeData) => {
+    event.dataTransfer.setData("application/reactflow", nodeType);
+
+    event.dataTransfer.setData("application/reactflow/node/name", nodeName);
+    event.dataTransfer.setData(
+      "application/reactflow/codeData",
+      JSON.stringify(codeData)
+    );
+    event.dataTransfer.effectAllowed = "move";
+  };
   return (
     <div
       style={{ width: "20vw" }}
@@ -134,13 +144,13 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
           <div
             className="border-2 rounded-md border-componentBorder p-[13px] cursor-pointer hover:bg-componentBgHover select-none"
             onDragStart={(event) =>
-              onDragStart(event, program.name, "code-node")
+              onDragStartCode(event, program.name, "code-node", program)
             }
             draggable
           >
             <div className="flex items-center justify-between ">
               <div className="flex gap-1 items-center">
-                <div
+                {/* <div
                   className="cursor-pointer bg-green-700 w-6 h-6 rounded-full"
                   // onClick={(e) =>
                   //   handleChildClick(e, `/hub/${postInfo.hubname}`)
@@ -150,7 +160,7 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                ></div>
+                ></div> */}
 
                 <div className="text-sm font-medium ">{program.username}</div>
               </div>
