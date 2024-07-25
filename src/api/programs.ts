@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { API_BASE_URL } from "../utils/utils";
+import { API2_BASE_URL, API_BASE_URL } from "../utils/utils";
 
 export const fetchPrograms = async (token: string): Promise<any> => {
     try {
@@ -214,7 +214,7 @@ export const fetchPrograms = async (token: string): Promise<any> => {
         try {
           const outputFileType = formData.get("outputFileType"); // Renvoie 'py'
 
-            const response = await axios.post(`${API_BASE_URL}/program/execute`, formData, {
+            const response = await axios.post(`${API2_BASE_URL}/program/execute`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -242,7 +242,7 @@ export const fetchPrograms = async (token: string): Promise<any> => {
     try {
       const outputFileType = formData.get("outputFileType"); // Renvoie 'py'
 
-        const response = await axios.post(`${API_BASE_URL}/program/pipeline/execute`, formData, {
+        const response = await axios.post(`${API2_BASE_URL}/program/pipeline/execute`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${token}`
