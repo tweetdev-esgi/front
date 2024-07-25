@@ -11,7 +11,7 @@ function Header() {
       <header className="header border-2 border-headerBorder bg-headerBg">
         <div className="header_logo">
           <a className="header_logo-link text-fontColor" href="/feed">
-            TweetDev
+            TweetDevs
           </a>
           {/* <div>
             <MagnifyingGlass weight="bold"></MagnifyingGlass>
