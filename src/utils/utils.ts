@@ -1,6 +1,6 @@
 export const API_BASE_URL = process.env.API_BASE_URL as string;
 export const FRONT_BASE_URL = process.env.FRONT_BASE_URL as string;
-export const API2_BASE_URL = process.env.API2_BASE_URL as string;
+export const API2_BASE_URL = "http://localhost:3000";
 export const convertTimestampToMonthYear =(timestamp: string): string =>{
     const date = new Date(timestamp);
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day:"2-digit" };
