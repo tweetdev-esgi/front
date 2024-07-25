@@ -32,6 +32,7 @@ export default function DetailsCode(props) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const [inputType, setInputType] = useState("void");
+  const [language, setLanguage] = useState("javascript");
 
   const [outputType, setOutputType] = useState("void");
   const handleOutputTypeSelect = (name: string) => {
@@ -62,6 +63,7 @@ export default function DetailsCode(props) {
             setLoading(false);
             setInputType(programData.inputFileType);
             setOutputType(programData.outputFileType);
+            setLanguage(programData.language);
             // Check if the program is deletable after fetching the program
             const response = await getIsProgramDeletable(sessionToken, id);
             setIsModifiable(response);
@@ -163,8 +165,10 @@ export default function DetailsCode(props) {
             </Box>
             <Output
               editorRef={editorRef}
-              language={programData?.language || "javascript"}
+              language={language}
               uploadedFile={uploadedFile}
+              inputType={inputType} // Pass inputType
+              outputType={outputType} // Pass outputType
             />
           </HStack>
           <div className="flex flex-row justify-between">

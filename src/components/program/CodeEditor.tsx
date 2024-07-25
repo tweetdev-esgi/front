@@ -21,7 +21,7 @@ const outputFileType = [
 const CodeEditor: React.FC = () => {
   const editorRef = useRef<any>(null);
   const [language, setLanguage] =
-    useState<keyof typeof CODE_SNIPPETS>("javascript");
+    useState<keyof typeof CODE_SNIPPETS>("python");
   const [value, setValue] = useState<string>(CODE_SNIPPETS[language]);
   const [token, setToken] = useState<string | null>(null);
   const [outputType, setOutputType] = useState("void");

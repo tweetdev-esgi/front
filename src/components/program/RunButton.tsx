@@ -49,7 +49,7 @@ const RunCodeButton = ({
       } else {
         const url = window.URL.createObjectURL(result);
         setFileUrl(url);
-        setMessage("Le fichier est prêt à être téléchargé.");
+        setMessage("The file is ready to be downloaded.");
         hotToast.success("File fetched"); // Use the renamed 'hotToast' variable
         setIsError(false); // Set to false as the result is successful
       }
@@ -84,25 +84,26 @@ const RunCodeButton = ({
   };
 
   return (
-    <div>
-      <summary className="btn mb-2 px-2 min-h-0 h-6 " onClick={runCode}>
-        Run Code
-      </summary>
-      <div>
-        {message && <p>{message}</p>}
+    <div className="static ">
+      <div className="absolute right-10 top-24 ">
+        {message && <p className="font-medium">{message}</p>}
         {fileUrl && (
-          <div
-            onClick={downloadFile}
-            style={{
-              cursor: "pointer",
-              color: "blue",
-              textDecoration: "underline",
-            }}
-          >
-            Cliquez ici pour télécharger le fichier
+          <div>
+            <p
+              onClick={downloadFile}
+              style={{
+                textDecoration: "underline",
+              }}
+              className="font-medium text-end   cursor-pointer text-accentColor hover:text-accentColorHover"
+            >
+              Download file
+            </p>
           </div>
         )}
       </div>
+      <summary className="btn mb-2 px-2 min-h-0 h-6 " onClick={runCode}>
+        Run Code
+      </summary>
     </div>
   );
 };
