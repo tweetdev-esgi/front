@@ -273,9 +273,9 @@ const DnDFlow = () => {
         formData.append("outputFileType", element.outputFileType);
 
         try {
-          const result = await executePipeline(token, formData);
+          const result = await executeProgram(token, formData);
 
-          if (false) {
+          if (true) {
             setOutput(result.split("\n"));
             toast.success("Le code a été exécuté avec succès.", {
               duration: 1000,
