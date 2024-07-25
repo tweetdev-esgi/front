@@ -21,7 +21,7 @@ export const fetchWorkflows = async (token: string): Promise<any> => {
           'Authorization': `Bearer ${token}`
         }
       });
-      return response.data;
+      return response.data.reverse();
     } catch (error) {
       console.error("Error fetching Workflows:", error);
       throw error;
@@ -134,7 +134,7 @@ export const getUserWorkflows = async (token: string, username?: string): Promis
       },
       params: username ? { username } : {}
     });
-    return response.data;
+    return response.data.reverse();
   } catch (error) {
     console.error("Error fetching posts:", error);
     throw error;
@@ -154,6 +154,23 @@ export const fetchGetUserWorkflows = async (token: string, username?: string) =>
   export const createWorkflow = async (token: string,formData: any): Promise<any> => {
     try {
       const response = await axios.post(`${API_BASE_URL}/workflow/`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating hub :", error);
+      throw error;
+    }
+  };
+
+  
+  
+  export const cloningWorkflow = async (token: string,formData: any): Promise<any> => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/workflow/clone`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

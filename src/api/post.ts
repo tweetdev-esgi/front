@@ -10,7 +10,7 @@ export const getPosts = async (token: string): Promise<any> => {
         'Authorization': `Bearer ${token}`
       }
     });
-    return response.data;
+    return response.data.reverse();
   } catch (error) {
     console.error("Error fetching posts:", error);
     throw error;

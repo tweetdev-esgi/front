@@ -20,7 +20,7 @@ export const fetchPrograms = async (token: string): Promise<any> => {
           'Authorization': `Bearer ${token}`
         }
       });
-      return response.data;
+      return response.data.reverse();
     } catch (error) {
       console.error("Error fetching programs:", error);
       throw error;
@@ -285,7 +285,7 @@ export const fetchPrograms = async (token: string): Promise<any> => {
         },
         params: username ? { username } : {}
       });
-      return response.data;
+      return response.data.reverse(); 
     } catch (error) {
       console.error("Error fetching posts:", error);
       throw error;

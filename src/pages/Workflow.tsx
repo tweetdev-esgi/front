@@ -20,8 +20,12 @@ import RunNode from "../components/workflow/RunNode";
 import FinishNode from "../components/workflow/FinishNode";
 import EditWorkflowButton from "../components/buttons/EditWorkflowButton";
 import UploadNode from "../components/workflow/UploadNode";
-import { getSession } from "../services/sessionService";
 import {
+  getLocalStorageItemByName,
+  getSession,
+} from "../services/sessionService";
+import {
+  cloningWorkflow,
   createWorkflow,
   deleteWorkflow,
   deleteWorkflowVersionByIdandName,
@@ -58,7 +62,7 @@ const DnDFlow = () => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<
     IWorkflow | undefined
   >();
-
+  const username = getLocalStorageItemByName("username");
   const [workflowName, setWorkflowName] = useState(
     (selectedWorkflow && selectedWorkflow.name) || "Untitled Workflow"
   );
@@ -402,6 +406,20 @@ const DnDFlow = () => {
     }
   };
 
+  const cloneWorkflow = async () => {
+    if (rfInstance) {
+      const flow = rfInstance.toObject();
+      const content = { name: selectedWorkflow.name + " clone", content: flow };
+      try {
+        const sessionToken = getSession();
+        const create = await cloningWorkflow(sessionToken, content);
+        toast.success("workflow cloning successfully");
+        window.location.href = "";
+      } catch (error) {
+        toast.error("error while cloning workflow");
+      }
+    }
+  };
   // const initializeNodes = () => {
   //   setNodes(initialNodes);
   // };
@@ -511,9 +529,16 @@ const DnDFlow = () => {
               </div>
               <div onClick={onSaveUpgrade}>
                 <CustomButton
-                  color={"#22c55e "}
+                  color={"#16a34a"} // Vert foncé pour "Upgrade Version"
                   Icon={Save}
                   text={"Upgrade Version"}
+                ></CustomButton>
+              </div>
+              <div onClick={cloneWorkflow}>
+                <CustomButton
+                  color={"#3b82f6"} // Bleu clair pour "Clone"
+                  Icon={Save}
+                  text={"Clone"}
                 ></CustomButton>
               </div>
               <div onClick={deleteWorkflowByID}>

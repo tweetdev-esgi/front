@@ -22,7 +22,7 @@ export const fetchHubs = async (token: string): Promise<any> => {
           'Authorization': `Bearer ${token}`
         }
       });
-      return response.data;
+      return response.data.reverse()  ;
     } catch (error) {
       console.error("Error fetching hubs:", error);
       throw error;
@@ -65,7 +65,7 @@ export const fetchHubs = async (token: string): Promise<any> => {
           'Authorization': `Bearer ${token}`
         }
       });
-      return response.data;
+      return response.data.reverse();
     } catch (error) {
       console.error("Error fetching hubs:", error);
       throw error;

@@ -107,7 +107,13 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
             selectedKey === key ? "border-blue-500" : "border-componentBorder"
           }`}
         >
-          <h1>{workflow.name}</h1>
+          <h1 className="font-medium">{workflow.name}</h1>
+          <div className="flex flex-row gap-1">
+            <div className="text-secondaryColor">by</div>{" "}
+            <div className="font-medium text-secondaryColor">
+              {workflow.username}
+            </div>
+          </div>
           {/* <h3>{workflow.username}</h3> */}
         </div>
       ))}
@@ -162,9 +168,9 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
                   }}
                 ></div> */}
 
-                <div className="text-sm font-medium ">{program.username}</div>
+                <div className="text-base font-medium ">{program.username}</div>
               </div>
-              <div className="text-sm text-secondaryColor">
+              <div className="text-sm text-secondaryColor font-medium">
                 {convertTimeToPostTime(program.creationDate)}
               </div>
             </div>
@@ -173,8 +179,12 @@ function WorkflowSideBar({ workflows, selectedKey, selectWorkflow }) {
               {program.name}
             </h2>
             <div className=" flex justify-between">
-              <div className="text-sm">{program.inputFileType}</div>
-              <div className="text-sm">{program.outputFileType}</div>
+              <div className="text-sm text-secondaryColor font-medium">
+                {program.inputFileType}
+              </div>
+              <div className="text-sm text-secondaryColor font-medium">
+                {program.outputFileType}
+              </div>
             </div>
           </div>
         );
