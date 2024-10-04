@@ -51,9 +51,9 @@ const DnDFlow = () => {
   const [selectedVersion, setSelectedVersion] = useState("");
   const [versions, setVersions] = useState([]);
 
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState([]);
 
-  const [fileUrl, setFileUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState([]);
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -266,7 +266,8 @@ const DnDFlow = () => {
     }
 
     if (currentNode && currentNode.type === "finish-node") {
-      toast.success(`Workflow: ${nodeNames.join(" -> ")}`);
+      // toast.success(`Workflow: ${nodeNames.join(" -> ")}`);
+      toast.success(`Workflow Running ...`);
 
       // Prepare FormData for each code node detail
       const token = getSession();
@@ -277,18 +278,17 @@ const DnDFlow = () => {
         formData.append("outputFileType", element.outputFileType);
 
         try {
-          const result = await executeProgram(token, formData);
+          const result = await executePipeline(token, formData);
 
-          if (true) {
-            setOutput(result.split("\n"));
+          if (element.outputFileType == "void") {
+            setOutput((prevOutputs) => [...prevOutputs, result])
             toast.success("Le code a été exécuté avec succès.", {
               duration: 1000,
             });
           } else {
             const url = window.URL.createObjectURL(result);
-            setFileUrl(url);
-            // setMessage("The file is ready to be downloaded.");
-            toast.success("File fetched"); // Use the renamed 'hotToast' variable
+            setFileUrl((prevUrls) => [...prevUrls, url]);  // Add the new file URL
+            toast.success("File fetched");
           }
         } catch (error) {
           toast.error("Error executing program.");
@@ -301,19 +301,20 @@ const DnDFlow = () => {
       toast.error("Workflow does not end with a finish node.");
     }
   };
-  const downloadFile = () => {
-    if (fileUrl) {
+  const downloadFile = (url, index) => {
+    if (url) {
       const link = document.createElement("a");
-      link.href = fileUrl;
+      link.href = url;
       // link.download = "output." + outputType; // Dynamically set the file extension
-      link.download = "output.jpg"; // Dynamically set the file extension
 
+      link.download = `output_${index}.jpg`;  // Use the index to name the file
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(fileUrl); // Révoquer l'URL pour libérer les ressources
+      window.URL.revokeObjectURL(url);  // Revoke the URL after downloading
     }
   };
+
 
   const selectWorkflow = (workflow, key) => {
     setSelectedWorkflow(workflow);
@@ -423,8 +424,14 @@ const DnDFlow = () => {
   // const initializeNodes = () => {
   //   setNodes(initialNodes);
   // };
+  const handleKeyPress = (event) => {
+    // This will log the key pressed to the console
+    if(event.key == "o"){
+      toast.success("Workflow Running...")
+    }
+  };
   return (
-    <div className="mt-20 mx-4">
+    <div tabIndex={0} onKeyDown={handleKeyPress} className="mt-20 mx-4 outline-none">
       {isAnyWorkflow && (
         <div className="flex mb-2 gap-2">
           <input
@@ -463,7 +470,7 @@ const DnDFlow = () => {
           >
             Create Workflow
           </summary>
-          {output}
+      
         </div>
       )}
       {!isAnyWorkflow && (
@@ -474,19 +481,32 @@ const DnDFlow = () => {
           Create Workflow
         </summary>
       )}
-      {fileUrl && (
-        <div>
-          <p
-            onClick={downloadFile}
-            style={{
-              textDecoration: "underline",
-            }}
-            className="font-medium text-end   cursor-pointer text-accentColor hover:text-accentColorHover"
-          >
-            Download file
-          </p>
-        </div>
-      )}
+      {fileUrl.length > 0 && (
+        
+  <div>
+    {fileUrl.map((url, index) => (
+      <p
+        key={index}
+        onClick={() => downloadFile(url, index)}
+        style={{ textDecoration: "underline" }}
+        className="font-medium text-end cursor-pointer text-accentColor hover:text-accentColorHover"
+      >
+        Download file {index + 1}
+      </p>
+    ))}
+  </div>
+  
+)}
+    <div className="flex flex-col">
+          {output.map((result, index) => (
+      <p
+        key={index}
+        className="font-medium"
+      >
+         {index + 1 +')'} {result}
+      </p>
+    ))}
+    </div>
       <div className="flex gap-2">
         <WorkflowSideBar
           workflows={workflows}

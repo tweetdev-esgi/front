@@ -10,13 +10,14 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    
+
   },
   define: {
     'process.env': {
-      
-    API_BASE_URL: 'https://tweetdev-back-c06023c6bfdd.herokuapp.com',
-    FRONT_BASE_URL: 'https://tweetdev-front-2be782a7954b.herokuapp.com',
+
+    API_BASE_URL: 'http://localhost:3000',
+    API2_BASE_URL: 'http://localhost:3000',
+    FRONT_BASE_URL: 'http://localhost:4000',
   }
   }
 });
