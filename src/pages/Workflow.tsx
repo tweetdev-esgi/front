@@ -51,9 +51,9 @@ const DnDFlow = () => {
   const [selectedVersion, setSelectedVersion] = useState("");
   const [versions, setVersions] = useState([]);
 
-  const [output, setOutput] = useState([]);
+  const [workflowResults, setWorkflowResults] = useState([]); 
 
-  const [fileUrl, setFileUrl] = useState([]);
+
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -281,13 +281,13 @@ const DnDFlow = () => {
           const result = await executePipeline(token, formData);
 
           if (element.outputFileType == "void") {
-            setOutput((prevOutputs) => [...prevOutputs, result])
+            setWorkflowResults((prevResults) => [...prevResults, { type: 'text', content: result }]); // Storing output
             toast.success("Le code a été exécuté avec succès.", {
               duration: 1000,
             });
           } else {
             const url = window.URL.createObjectURL(result);
-            setFileUrl((prevUrls) => [...prevUrls, url]);  // Add the new file URL
+            setWorkflowResults((prevResults) => [...prevResults, { type: 'file', content: url }]); // Storing file URL
             toast.success("File fetched");
           }
         } catch (error) {
@@ -481,31 +481,28 @@ const DnDFlow = () => {
           Create Workflow
         </summary>
       )}
-      {fileUrl.length > 0 && (
-        
-  <div>
-    {fileUrl.map((url, index) => (
-      <p
-        key={index}
-        onClick={() => downloadFile(url, index)}
-        style={{ textDecoration: "underline" }}
-        className="font-medium text-end cursor-pointer text-accentColor hover:text-accentColorHover"
-      >
-        Download file {index + 1}
-      </p>
-    ))}
-  </div>
-  
-)}
-    <div className="flex flex-col">
-          {output.map((result, index) => (
-      <p
-        key={index}
-        className="font-medium"
-      >
-         {index + 1 +')'} {result}
-      </p>
-    ))}
+      <div>
+      {/* Rendu de la liste fusionnée */}
+      {workflowResults.length > 0 && (
+        <div className="flex flex-col">
+          {workflowResults.map((item, index) => (
+            item.type === 'file' ? (
+              <p
+                key={index}
+                onClick={() => downloadFile(item.content, index)}
+                style={{ textDecoration: "underline" }}
+                className="font-medium cursor-pointer text-accentColor hover:text-accentColorHover"
+              >
+                {index + 1 + ')'} Download file 
+              </p>
+            ) : (
+              <p key={index} className="font-medium">
+                {index + 1 + ')'} {item.content}
+              </p>
+            )
+          ))}
+        </div>
+      )}
     </div>
       <div className="flex gap-2">
         <WorkflowSideBar
