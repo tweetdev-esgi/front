@@ -240,7 +240,7 @@ const DnDFlow = () => {
       toast.error("Workflow must have a start node and finish node.");
       return;
     }
-
+    setWorkflowResults([])
     const nodeNames = [];
     const codeNodeDetails = []; // Array to store details of code nodes
     let currentNode = startNode;
@@ -482,7 +482,6 @@ const DnDFlow = () => {
         </summary>
       )}
       <div>
-      {/* Rendu de la liste fusionnée */}
       {workflowResults.length > 0 && (
         <div className="flex flex-col">
           {workflowResults.map((item, index) => (

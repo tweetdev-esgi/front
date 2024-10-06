@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Handle, NodeToolbar, Position, useReactFlow } from "reactflow";
 import { Code, Trash2, Pencil } from "lucide-react";
 import CustomButton from "../buttons/CustomButton";
-import { FilePy } from "@phosphor-icons/react";
+import { FilePy, FileTxt, FilePng, FileJpg,FileJs } from "@phosphor-icons/react";
 import { navigateTo, navigateToNewWindow } from "../../utils/utils";
 
 export default function CodeNode({ id, data }) {
@@ -14,6 +14,22 @@ export default function CodeNode({ id, data }) {
     reactFlowInstance.setNodes((nds) => nds.filter((node) => node.id !== id));
   };
 
+  const getIconByFileType = (fileType: string) => {
+    switch (fileType) {
+      case "py":
+        return <FilePy size={16} weight="fill" />;
+      case "txt":
+        return <FileTxt size={16} weight="fill" />;
+      case "png":
+        return <FilePng size={16} weight="fill" />;
+      case "jpg":
+        return <FileJpg size={16} weight="fill" />;
+      case "js":
+        return <FileJs size={16} weight="fill" />;
+      default:
+        return <div> </div>; // ou une icône par défaut si tu préfères
+    }
+  };
   const toggleModal = () => {
     setIsModalOpen((prevState) => !prevState);
   };
@@ -56,8 +72,13 @@ export default function CodeNode({ id, data }) {
             <Code size={35} color="orange" />
           </p>
         </div>
-        <div className="relative -top-[27px] right-[2px] text-right">
-          <FilePy size={16} weight="fill" />
+        <div className="flex flex-row justify-between mx-1">
+        <div className="relative -top-[27px]">
+          {getIconByFileType(codeData.inputFileType) }
+        </div>
+        <div className="relative -top-[27px]">
+          {getIconByFileType(codeData.outputFileType) }
+        </div>
         </div>
         <div className="relative -top-5">
           <p className="text-white text-[12px] text-center font-medium">
@@ -75,6 +96,7 @@ export default function CodeNode({ id, data }) {
           >
             <h2 className="text-lg font-semibold mb-4">Edit Code Data</h2>
             <p>{codeData.name}</p>
+
             {/* You can add more content here */}
             <button
               onClick={() => setIsModalOpen(false)}
