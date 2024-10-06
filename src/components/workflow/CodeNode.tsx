@@ -3,7 +3,7 @@ import { Handle, NodeToolbar, Position, useReactFlow } from "reactflow";
 import { Code, Trash2, Pencil } from "lucide-react";
 import CustomButton from "../buttons/CustomButton";
 import { FilePy } from "@phosphor-icons/react";
-import { navigateTo } from "../../utils/utils";
+import { navigateTo, navigateToNewWindow } from "../../utils/utils";
 
 export default function CodeNode({ id, data }) {
   const reactFlowInstance = useReactFlow();
@@ -40,7 +40,7 @@ export default function CodeNode({ id, data }) {
         className="flex gap-1"
       >
         <button>
-          <div onClick={() => navigateTo("/program/" + codeData._id)}>
+          <div onClick={() => navigateToNewWindow("/program/" + codeData._id)}>
             <CustomButton text={"View"} color={"#355cc9"} Icon={Pencil} />
           </div>
         </button>

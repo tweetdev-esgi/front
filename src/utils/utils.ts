@@ -35,7 +35,10 @@ export const convertTimestampToMonthYear =(timestamp: string): string =>{
     window.location.href = location;
   };
 
-
+  export const navigateToNewWindow = (location: string) => {
+    window.open(location, '_blank');
+  };
+  
 
 
   export const defaultUser: UserResponse = {
