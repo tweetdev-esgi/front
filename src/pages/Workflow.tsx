@@ -232,81 +232,114 @@ const DnDFlow = () => {
       toast.success(`${workflowName} upgraded successfully`);
     }
   };
+
   const runWorkflow = async () => {
-    const startNode = nodes.find((node) => node.type === "run-node");
-    const endNode = nodes.find((node) => node.type === "finish-node");
+  const startNode = nodes.find((node) => node.type === "run-node");
+  const endNode = nodes.find((node) => node.type === "finish-node");
 
-    if (!startNode || !endNode) {
-      toast.error("Workflow must have a start node and finish node.");
-      return;
-    }
-    setWorkflowResults([])
-    const nodeNames = [];
-    const codeNodeDetails = []; // Array to store details of code nodes
-    let currentNode = startNode;
+  if (!startNode || !endNode) {
+    toast.error("Workflow must have a start node and finish node.");
+    return;
+  }
 
-    while (currentNode) {
-      nodeNames.push(currentNode.data.label);
+  setWorkflowResults([]);
+  const nodeNames = [];
+  const codeNodeDetails = []; // Array to store details of code nodes
+  let currentNode = startNode;
+  let fileData = null; // To store file from an UploadNode
 
-      // Check if the current node is a code-node and extract the details
-      if (currentNode.type === "code-node") {
-        const { language, outputFileType } = currentNode.data.codeData;
-        const code = currentNode.data.codeData.content; // Extract code from content property
-        codeNodeDetails.push({ language, code, outputFileType });
-      }
+  while (currentNode) {
+    nodeNames.push(currentNode.data.label);
 
-      const nextEdge = edges.find((edge) => edge.source === currentNode.id);
-      if (!nextEdge) break;
-      currentNode = nodes.find((node) => node.id === nextEdge.target);
+    // Check if the current node is an upload-node and extract the file
+    if (currentNode.type === "upload-node") {
+      const uploadedFile = currentNode.data.file; // Assuming file is saved in the data prop
 
-      if (currentNode && currentNode.type === "finish-node") {
-        nodeNames.push(currentNode.data.label);
-        break;
+      if (uploadedFile) {
+        fileData = uploadedFile; // Store the uploaded file
+        toast.success(`File from UploadNode saved: ${uploadedFile.name}`);
+      } else {
+        toast.error("No file found in UploadNode.");
       }
     }
+
+    // Check if the current node is a code-node and extract the details
+    if (currentNode.type === "code-node") {
+      const { language, outputFileType } = currentNode.data.codeData;
+      const code = currentNode.data.codeData.content; // Extract code from content property
+
+      // Prepare form data for the code-node and append the file if exists
+      const codeDetails = { language, code, outputFileType };
+
+      if (fileData) {
+        codeDetails.file = fileData; // Attach the file from UploadNode
+      }
+
+      codeNodeDetails.push(codeDetails);
+    }
+
+    const nextEdge = edges.find((edge) => edge.source === currentNode.id);
+    if (!nextEdge) break;
+    currentNode = nodes.find((node) => node.id === nextEdge.target);
 
     if (currentNode && currentNode.type === "finish-node") {
-      // toast.success(`Workflow: ${nodeNames.join(" -> ")}`);
-      toast.success(`Workflow Running ...`);
+      nodeNames.push(currentNode.data.label);
+      break;
+    }
+  }
 
-      // Prepare FormData for each code node detail
-      const token = getSession();
-      for (const element of codeNodeDetails) {
-        const formData = new FormData();
-        formData.append("language", element.language);
-        formData.append("code", element.code);
-        formData.append("outputFileType", element.outputFileType);
+  if (currentNode && currentNode.type === "finish-node") {
+    toast.success(`Workflow Running ...`);
+    console.log(codeNodeDetails)
+    const token = getSession();
+    for (const element of codeNodeDetails) {
+      const formData = new FormData();
+      formData.append("language", element.language);
+      formData.append("code", element.code);
+      formData.append("outputFileType", element.outputFileType);
 
-        try {
-          const result = await executePipeline(token, formData);
-
-          if (element.outputFileType == "void") {
-            setWorkflowResults((prevResults) => [...prevResults, { type: 'text', content: result }]); // Storing output
-            toast.success("Le code a été exécuté avec succès.", {
-              duration: 1000,
-            });
-          } else {
-            const url = window.URL.createObjectURL(result);
-            setWorkflowResults((prevResults) => [...prevResults, { type: 'file', content: url }]); // Storing file URL
-            toast.success("File fetched");
-          }
-        } catch (error) {
-          toast.error("Error executing program.");
-          console.error(error);
-        }
+      // If file is attached, append it to formData
+      if (element.file) {
+        formData.append("file", element.file);
       }
 
-      console.log("Code Node Details:", codeNodeDetails); // Log or use the codeNodeDetails as needed
-    } else {
-      toast.error("Workflow does not end with a finish node.");
+      try {
+        const result = await executePipeline(token, formData);
+
+        if (element.outputFileType == "void") {
+          setWorkflowResults((prevResults) => [
+            ...prevResults,
+            { type: 'text', content: result },
+          ]);
+          toast.success("Le code a été exécuté avec succès.", {
+            duration: 1000,
+          });
+        } else {
+          const url = window.URL.createObjectURL(result);
+          setWorkflowResults((prevResults) => [
+            ...prevResults,
+            { type: 'file', content: url },
+          ]);
+          toast.success("File fetched");
+        }
+      } catch (error) {
+        toast.error("Error executing program.");
+        console.error(error);
+      }
     }
-  };
+
+    console.log("Code Node Details:", codeNodeDetails);
+  } else {
+    toast.error("Workflow does not end with a finish node.");
+  }
+};
+
   const downloadFile = (url, index) => {
     if (url) {
       const link = document.createElement("a");
       link.href = url;
       // link.download = "output." + outputType; // Dynamically set the file extension
-
+      console.log(link.href)
       link.download = `output_${index}.jpg`;  // Use the index to name the file
       document.body.appendChild(link);
       link.click();

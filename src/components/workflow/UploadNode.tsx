@@ -1,25 +1,42 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Handle, NodeToolbar, Position, useReactFlow } from "reactflow";
-import { Play, Trash2, Upload, FileCheck2 } from "lucide-react";
+import { Trash2, Upload, FileCheck2, Download } from "lucide-react";
 import CustomButton from "../buttons/CustomButton";
-import { FilePy } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
-const RunNode = ({ id, data }) => {
+const UploadNode = ({ id, data }) => {
   const reactFlowInstance = useReactFlow();
   const nodeRef = useRef(null);
+  const [file, setFile] = useState<any>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const fileInputRef = useRef(null);
 
   const deleteNode = () => {
     reactFlowInstance.setNodes((nds) => nds.filter((node) => node.id !== id));
   };
-  const [file, setFile] = useState<any>(null);
-  const fileInputRef = useRef(null);
 
   const handleFileInputChange = (e) => {
     const files = Array.from(e.target.files);
     setFile(files);
-    console.log(files);
+
     if (files.length != 0) {
+      // Save the file in the node's data property
+      reactFlowInstance.setNodes((nds) =>
+        nds.map((node) =>
+          node.id === id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  file: files[0], // Store the first file or handle multiple if needed
+                },
+              }
+            : node
+        )
+      );
+
+      setFileUrl(URL.createObjectURL(files[0])); // Create a downloadable URL
+      
       toast.success(`Uploaded file ${files[0].name}`);
     }
   };
@@ -27,6 +44,15 @@ const RunNode = ({ id, data }) => {
   const openFilePicker = () => {
     fileInputRef.current.click();
   };
+
+  useEffect(() => {
+    // Cleanup URL object when the component unmounts or file changes
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [fileUrl]);
 
   return (
     <>
@@ -42,6 +68,15 @@ const RunNode = ({ id, data }) => {
               Icon={Upload}
             ></CustomButton>
           </button>
+          {fileUrl && (
+            <button className="" onClick={() => window.open(fileUrl, '_blank')}>
+              <CustomButton
+                text={"Download"}
+                color={"#4CAF50"} // You can change the color to green or any color you'd like
+                Icon={Download}
+              ></CustomButton>
+            </button>
+          )}
           <button className="" onClick={deleteNode}>
             <CustomButton
               text={"Delete"}
@@ -91,4 +126,4 @@ const RunNode = ({ id, data }) => {
   );
 };
 
-export default RunNode;
+export default UploadNode;
