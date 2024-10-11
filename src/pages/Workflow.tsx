@@ -301,11 +301,11 @@ const DnDFlow = () => {
       // If file is attached, append it to formData
       if (element.file) {
         formData.append("file", element.file);
+        fileData = null;
       }
 
       try {
         const result = await executePipeline(token, formData);
-
         if (element.outputFileType == "void") {
           setWorkflowResults((prevResults) => [
             ...prevResults,
@@ -316,9 +316,11 @@ const DnDFlow = () => {
           });
         } else {
           const url = window.URL.createObjectURL(result);
+          console.log("result" +result)
+          console.log("url" +result)
           setWorkflowResults((prevResults) => [
             ...prevResults,
-            { type: 'file', content: url },
+            { type: 'file', content: url , outputFileType: element.outputFileType},
           ]);
           toast.success("File fetched");
         }
@@ -334,13 +336,13 @@ const DnDFlow = () => {
   }
 };
 
-  const downloadFile = (url, index) => {
-    if (url) {
+const downloadFile = (url, outputFileType, index) => {
+  if (url) {
       const link = document.createElement("a");
       link.href = url;
       // link.download = "output." + outputType; // Dynamically set the file extension
       console.log(link.href)
-      link.download = `output_${index}.jpg`;  // Use the index to name the file
+      link.download = `output.` +outputFileType;  // Use the index to name the file
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -521,7 +523,7 @@ const DnDFlow = () => {
             item.type === 'file' ? (
               <p
                 key={index}
-                onClick={() => downloadFile(item.content, index)}
+                onClick={() => downloadFile(item.content, item.outputFileType, index)}
                 style={{ textDecoration: "underline" }}
                 className="font-medium cursor-pointer text-accentColor hover:text-accentColorHover"
               >
