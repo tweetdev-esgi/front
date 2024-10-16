@@ -16,7 +16,19 @@ const outputFileType = [
   { name: "jpg" },
   { name: "py" },
   { name: "js" },
+  { name: "pdf" },   // Portable Document Format
+  { name: "csv" },   // Comma-Separated Values
+  { name: "doc" },   // Microsoft Word Document
+  { name: "docx" },  // Microsoft Word Open XML Document
+  { name: "xlsx" },  // Microsoft Excel Spreadsheet
+  { name: "ppt" },   // Microsoft PowerPoint Presentation
+  { name: "pptx" },  // Microsoft PowerPoint Open XML Presentation
+  { name: "zip" },   // Zip Archive
+  { name: "rar" },   // RAR Archive
+  { name: "mp3" },   // MP3 Audio File
+  { name: "mp4" },   // MP4 Video File
 ];
+
 
 const CodeEditor: React.FC = () => {
   const editorRef = useRef<any>(null);

@@ -20,6 +20,7 @@ import RunNode from "../components/workflow/RunNode";
 import FinishNode from "../components/workflow/FinishNode";
 import EditWorkflowButton from "../components/buttons/EditWorkflowButton";
 import UploadNode from "../components/workflow/UploadNode";
+import FileNode from "../components/workflow/FileNode";
 import {
   getLocalStorageItemByName,
   getSession,
@@ -42,6 +43,7 @@ const nodeTypes = {
   "run-node": RunNode,
   "finish-node": FinishNode,
   "upload-node": UploadNode,
+  "file-node": FileNode,
 };
 
 let id = 0;
@@ -256,6 +258,7 @@ const DnDFlow = () => {
       if (uploadedFile) {
         previousFileData = uploadedFile; // Store the uploaded file
         toast.success(`File from UploadNode saved: ${uploadedFile.name}`);
+        
       } else {
         toast.error("No file found in UploadNode.");
       }

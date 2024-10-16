@@ -4,6 +4,7 @@ import { Code, Trash2, Pencil } from "lucide-react";
 import CustomButton from "../buttons/CustomButton";
 import { FilePy, FileTxt, FilePng, FileJpg,FileJs } from "@phosphor-icons/react";
 import { navigateTo, navigateToNewWindow } from "../../utils/utils";
+import { SiJavascript,SiPython } from "react-icons/si";
 
 export default function CodeNode({ id, data }) {
   const reactFlowInstance = useReactFlow();
@@ -69,7 +70,11 @@ export default function CodeNode({ id, data }) {
       <div className="w-20 h-20 bg-componentBg border-2 border-componentBorder rounded-sm">
         <div className="flex justify-center items-center h-full">
           <p className="text-sm">
-            <Code size={35} color="orange" />
+            {codeData.language === "python" ? (
+  <SiPython size={30} fill="#3399ff" />
+) : codeData.language === "javascript" ? (
+  <SiJavascript size={30} fill="yellow" />
+) : <Code size={35} color="orange" />}
           </p>
         </div>
         <div className="flex flex-row justify-between mx-1">
