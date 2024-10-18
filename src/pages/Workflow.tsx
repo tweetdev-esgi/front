@@ -451,9 +451,9 @@ const downloadFile = (url, outputFileType, index) => {
   // };
   const handleKeyPress = (event) => {
     // This will log the key pressed to the console
-    if(event.key == "o"){
-      toast.success("Workflow Running...")
-    }
+    // if(event.key == "o"){
+    //   toast.success("Workflow Running...")
+    // }
   };
   return (
     <div tabIndex={0} onKeyDown={handleKeyPress} className="mt-20 mx-4 outline-none">
