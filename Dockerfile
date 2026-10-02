@@ -13,6 +13,8 @@ RUN npm install
 COPY . .
 
 # Build the application
+ARG API_BASE_URL
+ARG FRONT_BASE_URL
 RUN npm run build
 
 # Use a new image to serve the built application

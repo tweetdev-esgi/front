@@ -15,8 +15,8 @@ export default defineConfig({
   define: {
     'process.env': {
       
-    API_BASE_URL: 'https://tweetdev-back-c06023c6bfdd.herokuapp.com',
-    FRONT_BASE_URL: 'https://tweetdev-front-2be782a7954b.herokuapp.com',
+    API_BASE_URL: process.env.API_BASE_URL ?? 'https://tweetdev-back-c06023c6bfdd.herokuapp.com',
+    FRONT_BASE_URL: process.env.FRONT_BASE_URL ?? 'https://tweetdev-front-2be782a7954b.herokuapp.com',
   }
   }
 });
